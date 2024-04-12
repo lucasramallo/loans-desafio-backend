@@ -1,29 +1,30 @@
 package com.github.lucasramallo.loans.service;
 
-import com.github.lucasramallo.loans.domain.customer.Customer;
 import com.github.lucasramallo.loans.domain.loan.Loan;
 import com.github.lucasramallo.loans.domain.loan.LoanType;
-import com.github.lucasramallo.loans.dtos.CustomerDTO;
+import com.github.lucasramallo.loans.dtos.CustomerLeanResponseDTO;
+import com.github.lucasramallo.loans.dtos.CustomerRequestDTO;
 import com.github.lucasramallo.loans.util.VerifyPersonalLoan;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class LoanService {
-    public void consultLoanModalities(CustomerDTO customerDTO) {
+    private List<Loan> loanList;
+
+    public CustomerLeanResponseDTO consultLoanModalities(CustomerRequestDTO customerRequestDTO) {
         Loan personalLoan = new Loan(LoanType.PERSONAL, 4);
         Loan guaranteedLoan = new Loan(LoanType.GUARANTEED, 3);
         Loan consignmentLoan = new Loan(LoanType.CONSIGNMENT, 2);
 
 
-        if(VerifyPersonalLoan.verify(customerDTO)){
-
+        if(VerifyPersonalLoan.verify(customerRequestDTO)){
+            loanList.add(personalLoan);
         }
 
+        return new CustomerLeanResponseDTO(customerRequestDTO.name(), loanList);
     }
-
-
 }
 
 

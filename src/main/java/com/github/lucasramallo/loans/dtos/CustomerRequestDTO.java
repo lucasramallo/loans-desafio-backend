@@ -2,7 +2,7 @@ package com.github.lucasramallo.loans.dtos;
 
 import java.math.BigDecimal;
 
-public record CustomerDTO(
+public record CustomerRequestDTO(
         Integer age,
         String cpf,
         String name,
