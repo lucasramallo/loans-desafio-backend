@@ -1,41 +1,38 @@
 package com.github.lucasramallo.loans.service;
 
+import com.github.lucasramallo.loans.domain.customer.Customer;
 import com.github.lucasramallo.loans.domain.loan.Loan;
 import com.github.lucasramallo.loans.domain.loan.LoanType;
 import com.github.lucasramallo.loans.dtos.CustomerLoanResponseDTO;
 import com.github.lucasramallo.loans.dtos.CustomerRequestDTO;
-import com.github.lucasramallo.loans.util.VerifyPersonalLoan;
+import com.github.lucasramallo.loans.util.CustumerDtoToCustumer;
+import com.github.lucasramallo.loans.util.VerifyPersonalAndGuaranteedLoan;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class LoanService {
-    private List<Loan> loanList = new ArrayList<>();
-
     public CustomerLoanResponseDTO consultLoanModalities(CustomerRequestDTO customerRequestDTO) {
-        loanList.clear();
+        List<Loan> loanList = new ArrayList<>();
 
-        Loan personalLoan = new Loan(LoanType.PERSONAL, 4);
-        Loan guaranteedLoan = new Loan(LoanType.GUARANTEED, 3);
-        Loan consignmentLoan = new Loan(LoanType.CONSIGNMENT, 2);
+        Customer customer = CustumerDtoToCustumer.toCustomer(customerRequestDTO);
 
-        if(VerifyPersonalLoan.verify(customerRequestDTO)){
+        if(VerifyPersonalAndGuaranteedLoan.verify(customer)){
+            Loan personalLoan = new Loan(LoanType.PERSONAL, 4);
+            Loan guaranteedLoan = new Loan(LoanType.GUARANTEED, 3);
+
             loanList.add(personalLoan);
+            loanList.add(guaranteedLoan);
+        }
+
+        if(customerRequestDTO.income().compareTo(BigDecimal.valueOf(5000)) >= 0) {
+            Loan consignmentLoan = new Loan(LoanType.CONSIGNMENT, 2);
+            loanList.add(consignmentLoan);
         }
 
         return new CustomerLoanResponseDTO(customerRequestDTO.name(), loanList);
     }
 }
-
-
-
-
-/*
-Conceder o empréstimo pessoal se o salário do cliente for igual ou inferior a R$ 3000.
-Conceder o empréstimo pessoal se o salário do cliente estiver entre R$ 3000 e R$ 5000, se o cliente tiver menos de 30 anos e residir em São Paulo (SP).
-Conceder o empréstimo consignado se o salário do cliente for igual ou superior a R$ 5000.
-Conceder o empréstimo com garantia se o salário do cliente for igual ou inferior a R$ 3000.
-Conceder o empréstimo com garantia se o salário do cliente estiver entre R$ 3000 e R$ 5000, se o cliente tiver menos de 30 anos e residir em São Paulo (SP).
-* */

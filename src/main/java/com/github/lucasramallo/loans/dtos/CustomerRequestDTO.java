@@ -8,4 +8,4 @@ public record CustomerRequestDTO(
         String name,
         BigDecimal income,
         String location
-        ) {}
+) {}

@@ -17,7 +17,7 @@ public class LoanController {
     private LoanService service;
 
     @PostMapping("/customer-loans")
-    public ResponseEntity<CustomerLoanResponseDTO> verifyLoan(@RequestBody CustomerRequestDTO customerRequestDTO) {
+    public ResponseEntity<CustomerLoanResponseDTO> consultLoan(@RequestBody CustomerRequestDTO customerRequestDTO) {
         CustomerLoanResponseDTO customerLoanResponseDTO = this.service.consultLoanModalities(customerRequestDTO);
         return ResponseEntity.ok(customerLoanResponseDTO);
     }
