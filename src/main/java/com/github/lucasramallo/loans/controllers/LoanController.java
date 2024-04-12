@@ -1,6 +1,6 @@
 package com.github.lucasramallo.loans.controllers;
 
-import com.github.lucasramallo.loans.dtos.CustomerLeanResponseDTO;
+import com.github.lucasramallo.loans.dtos.CustomerLoanResponseDTO;
 import com.github.lucasramallo.loans.dtos.CustomerRequestDTO;
 import com.github.lucasramallo.loans.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ public class LoanController {
     private LoanService service;
 
     @PostMapping("/customer-loans")
-    public ResponseEntity<CustomerLeanResponseDTO> verifyLoan(@RequestBody CustomerRequestDTO customerRequestDTO) {
-        CustomerLeanResponseDTO customerLeanResponseDTO = this.service.consultLoanModalities(customerRequestDTO);
-        return ResponseEntity.ok(customerLeanResponseDTO);
+    public ResponseEntity<CustomerLoanResponseDTO> verifyLoan(@RequestBody CustomerRequestDTO customerRequestDTO) {
+        CustomerLoanResponseDTO customerLoanResponseDTO = this.service.consultLoanModalities(customerRequestDTO);
+        return ResponseEntity.ok(customerLoanResponseDTO);
     }
 }
