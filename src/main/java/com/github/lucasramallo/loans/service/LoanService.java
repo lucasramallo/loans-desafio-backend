@@ -6,10 +6,8 @@ import com.github.lucasramallo.loans.domain.loan.LoanType;
 import com.github.lucasramallo.loans.dtos.CustomerLoanResponseDTO;
 import com.github.lucasramallo.loans.dtos.CustomerRequestDTO;
 import com.github.lucasramallo.loans.util.CustumerDtoToCustumer;
-import com.github.lucasramallo.loans.util.VerifyPersonalAndGuaranteedLoan;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class LoanService {
 
         Customer customer = CustumerDtoToCustumer.toCustomer(customerRequestDTO);
 
-        if(VerifyPersonalAndGuaranteedLoan.verify(customer)){
+        if (this.checkIfPersonalAndGuaranteedLoan(customer)) {
             Loan personalLoan = new Loan(LoanType.PERSONAL, 4);
             Loan guaranteedLoan = new Loan(LoanType.GUARANTEED, 3);
 
@@ -28,11 +26,22 @@ public class LoanService {
             loanList.add(guaranteedLoan);
         }
 
-        if(customerRequestDTO.income().compareTo(BigDecimal.valueOf(5000)) >= 0) {
+        if (customer.isCustumerIncomeBiggestgGeaterThan5000()) {
             Loan consignmentLoan = new Loan(LoanType.CONSIGNMENT, 2);
             loanList.add(consignmentLoan);
         }
 
         return new CustomerLoanResponseDTO(customerRequestDTO.name(), loanList);
+    }
+
+    private boolean checkIfPersonalAndGuaranteedLoan(Customer customer) {
+        return (
+                customer.isCustomersSalaryEqualToOrLessThan3000() ||
+                (
+                    customer.isCustomersSalaryIsBetween3000And5000() &&
+                    customer.isCustomerUnder30YearsOld() &&
+                    customer.isCustomerLiveInSP()
+                )
+        );
     }
 }
